@@ -1,0 +1,28 @@
+dependencies {
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    api(project(':excel-parser-spring-boot-poi'))
+
+    implementation 'org.springframework.boot:spring-boot'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+publishing {
+    publications {
+        mavenPublication(MavenPublication) {
+            from components.java
+            groupId 'com.github.cla9'
+            artifactId 'excel-parser-spring-boot-autoconfigure'
+            version project.version
+            artifact sourcesJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+description = "Excel Parser Spring Boot AutoConfigure"

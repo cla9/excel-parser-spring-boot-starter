@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.github.cla9.excel.autoconfigure.ExcelEntityScanAutoConfiguration,\
+  com.github.cla9.excel.autoconfigure.ExcelTemplateAutoConfiguration,\
+  com.github.cla9.excel.autoconfigure.ExcelAppAutoConfiguration

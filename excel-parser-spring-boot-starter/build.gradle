@@ -1,0 +1,20 @@
+dependencies {
+    api(project(':excel-parser-spring-boot-poi'))
+    api(project(':excel-parser-spring-boot-autoconfigure'))
+}
+
+publishing {
+    publications {
+        mavenPublication(MavenPublication) {
+            from components.java
+            groupId 'com.github.cla9'
+            artifactId 'excel-parser-spring-boot-starter'
+            version project.version
+            artifact sourcesJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+
+description = "Starter for using Spring Framework's excel support"

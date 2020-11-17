@@ -1,0 +1,5 @@
+rootProject.name = 'excel-parser-spring-boot-starter'
+
+include 'excel-parser-spring-boot-autoconfigure'
+include 'excel-parser-spring-boot-starter'
+include 'excel-parser-spring-boot-poi'
