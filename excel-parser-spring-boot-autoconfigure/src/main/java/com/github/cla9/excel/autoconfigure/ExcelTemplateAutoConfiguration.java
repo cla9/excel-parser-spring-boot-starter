@@ -25,9 +25,10 @@ public class ExcelTemplateAutoConfiguration{
         return new ReaderFactory(excelMetaModelMappingContext);
     }
 
-    @ConditionalOnMissingBean(ExcelTemplate.class)
+
     @Bean
-    @DependsOn("readerFactory")
+    @ConditionalOnMissingBean(ExcelTemplate.class)
+    @DependsOn({"readerFactory","excelMetaModelMappingContext"})
     public static ExcelTemplate excelTemplate(ReaderFactory readerFactory){
         return new ExcelTemplate(readerFactory);
     }

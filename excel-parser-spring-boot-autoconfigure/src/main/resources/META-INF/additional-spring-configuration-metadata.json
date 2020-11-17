@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name" : "excel.entity.validation.enabled",
+      "type": "java.lang.Boolean",
+      "values" : [
+        {
+          "value": "true",
+          "description": "Validate the excel entity, put into cache if there is attached ExcelMetaCachePut annotation."
+        },
+        {
+          "value" : "false",
+          "description": "Disable entity pre-validation."
+        }
+      ]
+    }
+  ]
+}
