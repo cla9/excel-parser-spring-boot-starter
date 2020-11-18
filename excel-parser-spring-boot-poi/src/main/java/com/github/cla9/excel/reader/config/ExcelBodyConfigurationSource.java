@@ -8,5 +8,4 @@ public interface ExcelBodyConfigurationSource {
     @Nullable
     Object getSource();
     Stream<String> getBasePackages();
-    Class<?> getFactoryClass();
 }

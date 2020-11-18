@@ -54,8 +54,5 @@ public class AnnotationExcelBodyConfigurationSource implements ExcelBodyConfigur
         return packages.stream();
     }
 
-    @Override
-    public Class<?> getFactoryClass() {
-        return ExcelTemplateFactoryBean.class;
-    }
+
 }
