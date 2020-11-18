@@ -1,4 +1,4 @@
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 
 plugins {
     id 'java-library'
@@ -6,11 +6,12 @@ plugins {
     id 'maven-publish'
     id 'org.springframework.boot' version '2.3.5.RELEASE' apply false
     id 'io.spring.dependency-management' version '1.0.10.RELEASE' apply false
+    id "com.jfrog.bintray" version "1.8.4" apply false
 }
 
 allprojects {
     group 'com.github.cla9'
-    version '1.0.0'
+    version project.version
 
     sourceCompatibility = '11'
 
@@ -22,6 +23,7 @@ allprojects {
 }
 
 subprojects {
+    apply plugin: 'com.jfrog.bintray'
     apply plugin: 'java-library'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
@@ -32,6 +34,26 @@ subprojects {
         from sourceSets.main.allSource
     }
 
+    bintray {
+        user = project.bintray_user
+        key = project.bintray_key
+        publications = ['mavenPublication']
+        pkg {
+            repo = 'maven'
+            name = 'excel-parser-spring-boot-starter'
+            userOrg = user
+            licenses = ['APACHE-2.0']
+            labels = ['spring boot', 'starter', 'java', 'excel','poi']
+            vcsUrl = 'https://github.com/cla9/excel-parser-spring-boot-starter.git'
+            version {
+                name = project.version
+                released = new Date()
+            }
+            override = true
+            publish = true
+        }
+    }
+
     artifacts {
         archives sourcesJar
     }
@@ -39,6 +61,29 @@ subprojects {
     jar{
         bootJar.enabled = false
         jar.enabled = true
+    }
+
+    ext {
+        pomConfig = {
+            licenses {
+                license {
+                    name "APACHE-2.0"
+                    url "https://www.apache.org/licenses/LICENSE-2.0"
+                    distribution "repo"
+                }
+            }
+            developers {
+                developer {
+                    id "cla9"
+                    name "Eunsoo Kim"
+                    email "cla90979@gmail.com"
+                }
+            }
+
+            scm {
+                url "https://github.com/cla9/excel-parser-spring-boot-starter"
+            }
+        }
     }
 }
 

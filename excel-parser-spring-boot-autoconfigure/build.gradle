@@ -22,6 +22,13 @@ publishing {
             artifact sourcesJar {
                 classifier "sources"
             }
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'excel-parser spring boot starter')
+                root.appendNode('name', 'excel-parser-spring-boot-autoconfigure')
+                root.appendNode('url', 'https://github.com/cla9/excel-parser-spring-boot-starter/tree/master/excel-parser-spring-boot-autoconfigure')
+                root.children().last() + pomConfig
+            }
         }
     }
 }
