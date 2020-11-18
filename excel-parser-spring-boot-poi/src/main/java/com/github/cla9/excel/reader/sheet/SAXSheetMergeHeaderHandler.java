@@ -7,10 +7,16 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Sax sheet merge header handler.
+ */
 public class SAXSheetMergeHeaderHandler extends DefaultHandler {
 
     private List<MergedArea> mergedAreas;
 
+    /**
+     * Instantiates a new Sax sheet merge header handler.
+     */
     public SAXSheetMergeHeaderHandler() {
         this.mergedAreas = new ArrayList<>();
     }
@@ -23,6 +29,11 @@ public class SAXSheetMergeHeaderHandler extends DefaultHandler {
         }
     }
 
+    /**
+     * Gets merged areas.
+     *
+     * @return the merged areas
+     */
     public List<MergedArea> getMergedAreas() {
         return mergedAreas;
     }

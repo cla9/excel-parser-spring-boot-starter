@@ -69,7 +69,7 @@ public class SampleDTO {
     private String level;
     private String description;
 }
-// 두번 째, SampleDTO의 Parsing 결과는 @ExcelColumn이 포함된 no,level 데이터만 추출됨
+// 두번째, SampleDTO의 Parsing 결과는 @ExcelColumn이 포함된 no,level 데이터만 추출됨
 ```
 
 

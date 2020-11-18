@@ -9,17 +9,37 @@ import java.util.stream.IntStream;
 
 import static com.github.cla9.excel.reader.util.ExcelConstant.UNDECIDED;
 
+/**
+ * The type Abstract sheet handler.
+ */
 public abstract class AbstractSheetHandler implements SheetHandler {
+    /**
+     * The Excel meta model.
+     */
     protected final ExcelMetaModel excelMetaModel;
+    /**
+     * The Header names.
+     */
     protected List<String> headerNames;
+    /**
+     * The Order.
+     */
     protected int[] order;
 
+    /**
+     * Instantiates a new Abstract sheet handler.
+     *
+     * @param metadata the metadata
+     */
     protected AbstractSheetHandler(ExcelMetaModel metadata) {
         this.excelMetaModel = metadata;
         this.headerNames = new ArrayList<>();
     }
 
 
+    /**
+     * Create order.
+     */
     protected void createOrder(){
         if(!excelMetaModel.isPartialParseOperation()){
             this.order = IntStream.range(0, headerNames.size()).toArray();
@@ -51,6 +71,10 @@ public abstract class AbstractSheetHandler implements SheetHandler {
                     .toArray();
         }
     }
+
+    /**
+     * Validate order.
+     */
     protected void validateOrder(){
         final int[] metaDataOrder = excelMetaModel.getOrder();
         if(metaDataOrder.length != order.length) {
@@ -63,10 +87,17 @@ public abstract class AbstractSheetHandler implements SheetHandler {
                 });
     }
 
+    /**
+     * Validate header.
+     */
     protected void validateHeader(){
         if (!excelMetaModel.hasAllColumnOrder() && excelMetaModel.getHeaders().size() != headerNames.size())
             throw new InvalidHeaderException("There is mismatched header name");
     }
+
+    /**
+     * Re order header name.
+     */
     protected void reOrderHeaderName(){
         headerNames = Arrays.stream(order).mapToObj(item -> headerNames.get(item))
                 .collect(Collectors.toList());

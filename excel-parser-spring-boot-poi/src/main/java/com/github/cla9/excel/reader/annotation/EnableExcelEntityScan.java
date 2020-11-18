@@ -9,6 +9,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * The interface Enable excel entity scan.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ConditionalOnProperty(prefix = "excel.entity.validation", name = "enabled", havingValue = "true", matchIfMissing = true)

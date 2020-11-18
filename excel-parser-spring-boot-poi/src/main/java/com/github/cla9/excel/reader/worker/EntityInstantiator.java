@@ -21,6 +21,11 @@ import java.util.stream.Collectors;
 
 import static org.springframework.util.StringUtils.isEmpty;
 
+/**
+ * The type Entity instantiator.
+ *
+ * @param <T> the type parameter
+ */
 public class EntityInstantiator<T> {
     private final Validator validator;
     private final TypeParser typeParser;
@@ -28,6 +33,9 @@ public class EntityInstantiator<T> {
     private List<EntityOrder> instances;
     private int iterator = 0;
 
+    /**
+     * Instantiates a new Entity instantiator.
+     */
     public EntityInstantiator() {
         typeParser = TypeParser.newBuilder().build();
         validator = ExcelBeanUtil.getBean(LocalValidatorFactoryBean.class).getValidator();
@@ -35,6 +43,16 @@ public class EntityInstantiator<T> {
         instances = new ArrayList<>();
     }
 
+    /**
+     * Create instance entity injection result.
+     *
+     * @param <R>              the type parameter
+     * @param clazz            the clazz
+     * @param excelHeaderNames the excel header names
+     * @param excelMetaModel   the excel meta model
+     * @param rowHandler       the row handler
+     * @return the entity injection result
+     */
     public <R> EntityInjectionResult<T> createInstance(Class<? extends T> clazz, List<String> excelHeaderNames, ExcelMetaModel excelMetaModel, RowHandler<R> rowHandler) {
         resourceCleanUp();
         final T object = BeanUtils.instantiateClass(clazz);
@@ -76,6 +94,9 @@ public class EntityInstantiator<T> {
     }
 
 
+    /**
+     * Resource clean up.
+     */
     public void resourceCleanUp() {
         iterator = 0;
         exceptions.clear();
@@ -163,10 +184,25 @@ public class EntityInstantiator<T> {
                 .build());
     }
 
+    /**
+     * The type Entity order.
+     */
     static class EntityOrder {
+        /**
+         * The Instance.
+         */
         Object instance;
+        /**
+         * The Field.
+         */
         Field field;
 
+        /**
+         * Instantiates a new Entity order.
+         *
+         * @param instance the instance
+         * @param field    the field
+         */
         public EntityOrder(Object instance, Field field) {
             this.instance = instance;
             this.field = field;

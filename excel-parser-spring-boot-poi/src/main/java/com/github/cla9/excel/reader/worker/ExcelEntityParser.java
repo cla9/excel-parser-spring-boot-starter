@@ -15,6 +15,9 @@ import java.util.stream.IntStream;
 
 import static com.github.cla9.excel.reader.util.ExcelConstant.UNDECIDED;
 
+/**
+ * The type Excel entity parser.
+ */
 public class ExcelEntityParser implements EntityParser {
     private ExcelBody bodyMetadata;
     private Class<?> tClass;
@@ -28,6 +31,9 @@ public class ExcelEntityParser implements EntityParser {
     private List<String> headerNames;
     private List<Integer> order;
 
+    /**
+     * Instantiates a new Excel entity parser.
+     */
     public ExcelEntityParser() {
         declaredFields = new ArrayList<>();
         instantiatorSource = new EntityInstantiatorSource();
@@ -47,6 +53,9 @@ public class ExcelEntityParser implements EntityParser {
         doParse();
     }
 
+    /**
+     * Resource clean up.
+     */
     public void resourceCleanUp() {
         bodyMetadata = null;
         tClass = null;

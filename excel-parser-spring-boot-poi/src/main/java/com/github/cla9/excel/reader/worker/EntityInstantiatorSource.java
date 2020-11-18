@@ -7,6 +7,9 @@ import com.github.cla9.excel.reader.annotation.Merge;
 import java.lang.reflect.Field;
 import java.util.stream.Stream;
 
+/**
+ * The type Entity instantiator source.
+ */
 public class EntityInstantiatorSource implements EntitySource {
     @Override
     public boolean isCreationTargetField(Field field) {

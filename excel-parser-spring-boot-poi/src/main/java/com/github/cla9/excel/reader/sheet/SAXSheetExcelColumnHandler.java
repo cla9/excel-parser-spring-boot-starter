@@ -9,9 +9,18 @@ import java.util.stream.Collectors;
 
 import static com.github.cla9.excel.reader.util.ExcelConstant.UNDECIDED;
 
+/**
+ * The type Sax sheet excel column handler.
+ */
 public final class SAXSheetExcelColumnHandler extends SAXSheetHandler {
     private int maxIndex;
 
+    /**
+     * Instantiates a new Sax sheet excel column handler.
+     *
+     * @param excelMetaModel the excel meta model
+     * @param mergedAreas    the merged areas
+     */
     public SAXSheetExcelColumnHandler(final ExcelMetaModel excelMetaModel, final List<MergedArea> mergedAreas) {
         super(excelMetaModel, mergedAreas);
     }

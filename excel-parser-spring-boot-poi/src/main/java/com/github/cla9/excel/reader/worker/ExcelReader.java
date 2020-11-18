@@ -11,12 +11,30 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 
+/**
+ * The type Excel reader.
+ *
+ * @param <T> the type parameter
+ */
 public abstract class ExcelReader<T> implements Reader<T> {
+    /**
+     * The T class.
+     */
     protected final Class<T> tClass;
+    /**
+     * The Entity parser.
+     */
     protected final EntityParser entityParser;
     private final EntityInstantiator<T> entityGenerator;
     private ExcelMetaModel excelMetaModel;
 
+    /**
+     * Instantiates a new Excel reader.
+     *
+     * @param tClass          the t class
+     * @param entityParser    the entity parser
+     * @param entityGenerator the entity generator
+     */
     public ExcelReader(Class<T> tClass, EntityParser entityParser, EntityInstantiator<T> entityGenerator) {
         this.tClass = tClass;
         this.entityParser = entityParser;
@@ -25,6 +43,11 @@ public abstract class ExcelReader<T> implements Reader<T> {
         this.excelMetaModel = entityParser.getEntityMetadata();
     }
 
+    /**
+     * Instantiates a new Excel reader.
+     *
+     * @param tClass the t class
+     */
     protected ExcelReader(Class<T> tClass) {
         this.tClass = tClass;
         entityParser = new ExcelEntityParser();
@@ -33,6 +56,12 @@ public abstract class ExcelReader<T> implements Reader<T> {
         excelMetaModel = entityParser.getEntityMetadata();
     }
 
+    /**
+     * Instantiates a new Excel reader.
+     *
+     * @param tClass         the t class
+     * @param excelMetaModel the excel meta model
+     */
     public ExcelReader(Class<T> tClass, ExcelMetaModel excelMetaModel) {
         this.tClass = tClass;
         this.entityParser = null;
@@ -61,10 +90,37 @@ public abstract class ExcelReader<T> implements Reader<T> {
         parseFile(multipartFile, excelMetaModel,  onSuccessConsumer, onErrorConsumer, forceMergedHeaderRefresh);
     }
 
+    /**
+     * Create result set excel result set.
+     *
+     * @param multipartFile            the multipart file
+     * @param metadata                 the metadata
+     * @param forceMergedHeaderRefresh the force merged header refresh
+     * @return the excel result set
+     */
     abstract protected ExcelResultSet<T> createResultSet(final MultipartFile multipartFile, final ExcelMetaModel metadata, boolean forceMergedHeaderRefresh);
+
+    /**
+     * Parse file.
+     *
+     * @param multipartFile            the multipart file
+     * @param excelMetaModel           the excel meta model
+     * @param onSuccessConsumer        the on success consumer
+     * @param onErrorConsumer          the on error consumer
+     * @param forceMergedHeaderRefresh the force merged header refresh
+     */
     abstract protected void parseFile(final MultipartFile multipartFile, final ExcelMetaModel excelMetaModel, final Consumer<T> onSuccessConsumer, final Consumer<ExcelRowException> onErrorConsumer, boolean forceMergedHeaderRefresh);
 
 
+    /**
+     * Inject value t.
+     *
+     * @param <R>                  the type parameter
+     * @param rowHandler           the row handler
+     * @param excelFileHeaderNames the excel file header names
+     * @return the t
+     * @throws ExcelRowException the excel row exception
+     */
     protected <R> T injectValue(RowHandler<R> rowHandler, List<String> excelFileHeaderNames) throws ExcelRowException {
         EntityInjectionResult<T> result = entityGenerator.createInstance(tClass, excelFileHeaderNames, excelMetaModel, rowHandler);
         if (Objects.isNull(result.getObject()))
@@ -76,6 +132,12 @@ public abstract class ExcelReader<T> implements Reader<T> {
         return result.getObject();
     }
 
+    /**
+     * Create exception row exception row.
+     *
+     * @param ex the ex
+     * @return the exception row
+     */
     @SuppressWarnings("unchecked")
     protected ExceptionRow<T> createExceptionRow(ExcelRowException ex) {
         return (ExceptionRow<T>) ExceptionRow.builder()

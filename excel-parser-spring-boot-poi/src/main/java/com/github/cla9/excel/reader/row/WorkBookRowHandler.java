@@ -9,7 +9,13 @@ import org.apache.poi.ss.usermodel.Row;
 import java.util.Objects;
 
 
+/**
+ * The type Work book row handler.
+ */
 public class WorkBookRowHandler implements RowHandler<Row> {
+    /**
+     * The Row.
+     */
     protected Row row;
 
     @Override
@@ -17,6 +23,12 @@ public class WorkBookRowHandler implements RowHandler<Row> {
         return getValue(row.getCell(i));
     }
 
+    /**
+     * Gets value.
+     *
+     * @param cell the cell
+     * @return the value
+     */
     protected String getValue(final Cell cell) {
         if(Objects.isNull(cell)) return null;
 
@@ -50,6 +62,11 @@ public class WorkBookRowHandler implements RowHandler<Row> {
         return value;
     }
 
+    /**
+     * Gets row.
+     *
+     * @return the row
+     */
     public Row getRow() {
         return this.row;
     }

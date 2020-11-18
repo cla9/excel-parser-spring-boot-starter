@@ -20,12 +20,28 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 
+/**
+ * The type Work book reader.
+ *
+ * @param <T> the type parameter
+ */
 public class WorkBookReader<T> extends ExcelReader<T> {
 
+    /**
+     * Instantiates a new Work book reader.
+     *
+     * @param tClass the t class
+     */
     public WorkBookReader(Class<T> tClass) {
         super(tClass);
     }
 
+    /**
+     * Instantiates a new Work book reader.
+     *
+     * @param tClass         the t class
+     * @param excelMetaModel the excel meta model
+     */
     public WorkBookReader(Class<T> tClass, ExcelMetaModel excelMetaModel) {
         super(tClass, excelMetaModel);
     }

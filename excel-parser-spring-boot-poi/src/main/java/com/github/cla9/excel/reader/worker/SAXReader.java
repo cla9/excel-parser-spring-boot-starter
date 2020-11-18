@@ -31,12 +31,28 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+/**
+ * The type Sax reader.
+ *
+ * @param <T> the type parameter
+ */
 public class SAXReader<T> extends ExcelReader<T> {
 
+    /**
+     * Instantiates a new Sax reader.
+     *
+     * @param tClass the t class
+     */
     public SAXReader(Class<T> tClass) {
         super(tClass);
     }
 
+    /**
+     * Instantiates a new Sax reader.
+     *
+     * @param tClass         the t class
+     * @param excelMetaModel the excel meta model
+     */
     public SAXReader(Class<T> tClass, ExcelMetaModel excelMetaModel) {
         super(tClass, excelMetaModel);
     }

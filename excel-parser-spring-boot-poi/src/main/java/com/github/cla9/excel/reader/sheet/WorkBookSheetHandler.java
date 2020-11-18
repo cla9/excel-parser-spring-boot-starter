@@ -19,6 +19,9 @@ import java.util.stream.IntStream;
 import static com.github.cla9.excel.reader.util.ExcelConstant.UNDECIDED;
 
 
+/**
+ * The type Work book sheet handler.
+ */
 public final class WorkBookSheetHandler extends AbstractSheetHandler   {
     private final Sheet sheet;
     private final Range dataRange;
@@ -26,8 +29,17 @@ public final class WorkBookSheetHandler extends AbstractSheetHandler   {
     private final ExcelMetaModel metadata;
     private final WorkBookRowHandler rowHandler;
     private final List<MergedArea> mergedAreas;
+    /**
+     * The Row generation success callback.
+     */
     protected Consumer<Row> rowGenerationSuccessCallback;
 
+    /**
+     * Instantiates a new Work book sheet handler.
+     *
+     * @param workbook       the workbook
+     * @param excelMetaModel the excel meta model
+     */
     public WorkBookSheetHandler(final Workbook workbook, final ExcelMetaModel excelMetaModel) {
         super(excelMetaModel);
         this.sheet = workbook.getSheetAt(0);
@@ -44,6 +56,10 @@ public final class WorkBookSheetHandler extends AbstractSheetHandler   {
             validateHeader();
         }
     }
+
+    /**
+     * Create header.
+     */
     protected void createHeader() {
         createMergedArea();
         boolean isMerged;
@@ -85,6 +101,9 @@ public final class WorkBookSheetHandler extends AbstractSheetHandler   {
                 .forEach(i -> headerNames.add(null));
     }
 
+    /**
+     * Parse.
+     */
     public void parse() {
         final int rowCount = sheet.getPhysicalNumberOfRows();
         final int endRow = dataRange.getEnd() == UNDECIDED ? rowCount : dataRange.getEnd();
@@ -114,6 +133,11 @@ public final class WorkBookSheetHandler extends AbstractSheetHandler   {
                 .anyMatch(StringUtils::isNotEmpty);
     }
 
+    /**
+     * Sets row generation success callback.
+     *
+     * @param rowGenerationSuccessCallback the row generation success callback
+     */
     public void setRowGenerationSuccessCallback(Consumer<Row> rowGenerationSuccessCallback) {
         this.rowGenerationSuccessCallback = rowGenerationSuccessCallback;
     }

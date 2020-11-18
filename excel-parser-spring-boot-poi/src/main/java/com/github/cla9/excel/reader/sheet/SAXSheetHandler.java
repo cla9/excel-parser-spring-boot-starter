@@ -15,17 +15,47 @@ import java.util.stream.IntStream;
 
 import static com.github.cla9.excel.reader.util.ExcelConstant.UNDECIDED;
 
+/**
+ * The type Sax sheet handler.
+ */
 public class SAXSheetHandler extends AbstractSheetHandler implements SheetHandler, XSSFSheetXMLHandler.SheetContentsHandler {
+    /**
+     * The Current row.
+     */
     protected int currentRow;
+    /**
+     * The Merged areas.
+     */
     protected List<MergedArea> mergedAreas;
+    /**
+     * The Row.
+     */
     protected List<String> row;
+    /**
+     * The Current col.
+     */
     protected int currentCol = -1;
+    /**
+     * The Data range.
+     */
     protected Range dataRange;
+    /**
+     * The Header range.
+     */
     protected Range headerRange;
 
+    /**
+     * The Row generation success callback.
+     */
     protected Consumer<List<String>> rowGenerationSuccessCallback;
 
 
+    /**
+     * Instantiates a new Sax sheet handler.
+     *
+     * @param excelMetaModel the excel meta model
+     * @param mergedAreas    the merged areas
+     */
     public SAXSheetHandler(ExcelMetaModel excelMetaModel, List<MergedArea> mergedAreas) {
         super(excelMetaModel);
 
@@ -36,6 +66,11 @@ public class SAXSheetHandler extends AbstractSheetHandler implements SheetHandle
         this.mergedAreas = mergedAreas;
     }
 
+    /**
+     * Sets row generation success callback.
+     *
+     * @param rowGenerationSuccessCallback the row generation success callback
+     */
     public void setRowGenerationSuccessCallback(Consumer<List<String>> rowGenerationSuccessCallback) {
         this.rowGenerationSuccessCallback = rowGenerationSuccessCallback;
     }
@@ -129,6 +164,11 @@ public class SAXSheetHandler extends AbstractSheetHandler implements SheetHandle
         }
     }
 
+    /**
+     * Create empty cell.
+     *
+     * @param gap the gap
+     */
     protected void createEmptyCell(int gap) {
         for (int i = 0; i < gap; i++) row.add(null);
     }
@@ -143,6 +183,11 @@ public class SAXSheetHandler extends AbstractSheetHandler implements SheetHandle
         return order;
     }
 
+    /**
+     * Is pass boolean.
+     *
+     * @return the boolean
+     */
     protected boolean isPass() {
         return row.stream().anyMatch(s -> !"".equals(s));
     }
