@@ -155,6 +155,9 @@ public class ExcelEntityParser implements EntityParser {
 
         if(bodyMetadata.dataRowPos() == UNDECIDED && bodyMetadata.dataRowRange().length < 1)
             throw new InvalidHeaderException("Either dataRowPos or dataRowRange must be entered.");
+
+        if(bodyMetadata.dataRowRange().length == 1 && bodyMetadata.dataRowRange()[0].start() > bodyMetadata.dataRowRange()[0].end())
+            throw new InvalidHeaderException("Start of data range must be less than end range");
     }
 
     private void calcHeaderRange(final int height) {
