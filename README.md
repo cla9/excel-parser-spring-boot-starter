@@ -106,11 +106,10 @@ public class SampleDTO extends BaseEntity{
 ```java
 
 //방법1. Collection 방식(Controller 파라미터로 주입받는 방법)
-
 @RestController
 public class SampleController {
     @PostMapping(value = "/form", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ExcelResultSet<SampleDTO>> getExcelResult(@ExcelRequestBody ExcelResultSet<ExcelDTO> resultSet) {
+    public ResponseEntity<ExcelResultSet<SampleDTO>> getExcelResult(@ExcelRequestBody ExcelResultSet<SampleDTO> resultSet) {
         //TODO your code
         return ResponseEntity.ok(resultSet);
     }
