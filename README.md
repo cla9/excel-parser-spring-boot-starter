@@ -66,7 +66,7 @@ Excel 파일 모든 Column 데이터 파싱 방법(@ExcelBody Annotation만 기�
 ```java
 
 @ExcelBody(dataRowPos = 2)
-public class SampleDTO {
+public class Character {
     private Integer no;
     private String level;
     private String description;
@@ -79,15 +79,16 @@ Excel 파일 일부 Column 데이터 파싱 방법(@ExcelColumn Annotation 추�
 
 ```java
 @ExcelBody(dataRowPos = 2)
-public class SampleDTO {
+public class Character{
     @ExcelColumn(headerName = "번호")
     private Integer no;
     @ExcelColumn(headerName = "등급")
     private String level;
     private String description;
 }
-// 두번째, SampleDTO의 Parsing 결과는 @ExcelColumn이 포함된 no,level 데이터만 추출됨
 ```
+
+위 코드 Parsing 결과는 @ExcelColumn이 포함된 no,level 데이터만 추출됩니다.
 
 <br />
 
