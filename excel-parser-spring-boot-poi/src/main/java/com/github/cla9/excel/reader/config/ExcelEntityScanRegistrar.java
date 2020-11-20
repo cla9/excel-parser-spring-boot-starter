@@ -18,7 +18,7 @@ public class ExcelEntityScanRegistrar implements ImportBeanDefinitionRegistrar, 
     private Environment environment;
 
     @Override
-    public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry, BeanNameGenerator importBeanNameGenerator) {
+    public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
 
         if(Objects.isNull(metadata.getAnnotationAttributes(getAnnotation().getName()))){
             return;
