@@ -57,19 +57,27 @@ excel:
 <br />
 
 
-Excel Parser를 사용하기 위해서 다음과 같이 Annotation 기반의 메타 데이터를 작성해야합니다. 이때 __@ExcelBody__ Annotation은 필수 입력 대상입니다.  
+Excel Parser를 사용하기 위해서 다음과 같이 Annotation 기반의 메타 데이터를 작성해야합니다. 이때 __@ExcelBody__ Annotation은 필수 입력 대상입니다.
+> Entity에는 반드시 Default Constructor가 존재해야합니다.
 
+<br />
+
+Excel 파일 모든 Column 데이터 파싱 방법(@ExcelBody Annotation만 기술)
 ```java
 
-//Excel 파일 모든 Column 데이터 파싱 방법(@ExcelBody Annotation만 기술)
 @ExcelBody(dataRowPos = 2)
 public class SampleDTO {
     private Integer no;
     private String level;
     private String description;
 }
+```
 
-//Excel 파일 일부 Column 데이터 파싱 방법(@ExcelColumn Annotation 추가 기술)
+<br />
+
+Excel 파일 일부 Column 데이터 파싱 방법(@ExcelColumn Annotation 추가 기술)
+
+```java
 @ExcelBody(dataRowPos = 2)
 public class SampleDTO {
     @ExcelColumn(headerName = "번호")
@@ -87,27 +95,24 @@ Excel Parser에서 제공하는 모든 Annotation을 적용하면, 다음과 같
 
 
 ```java
-@ExcelBody(dataRowPos = 3, type = ReaderType.SAX,
-        headerRowRange = @RowRange(start = 1, end = 2),
-        messageSource = TestRepository2.class)
-@ExcelColumnOverrides({
-        @ExcelColumnOverride(headerName = "변경컬럼1", index = 6, column = @ExcelColumn(headerName = "기존컬럼1", index = 10)),
-        @ExcelColumnOverride(headerName = "변경컬럼2", index = 8, column = @ExcelColumn(headerName = "기존컬럼2", index = 10)),
-})
+@ExcelBody(dataRowPos = 3, 
+           type = ReaderType.SAX,
+           headerRowRange = @RowRange(start = 1, end = 2),
+           messageSource = PersonMessageConverter.class)
+@ExcelBody(dataRowPos = 2)
 @ExcelMetaCachePut
-public class SampleDTO extends BaseEntity{
-    @ExcelColumn(headerName = "번호")
-    private Integer no;
-    @ExcelColumn(headerName = "등급", index = 2)
-    private String level;
-    private String description;
-    @ExcelEmbedded
-    private EmbeddedDTO embeddedDTO;
-    @ExcelColumnOverrides({
-            @ExcelColumnOverride(headerName = "집전화번호", index = 5, column = @ExcelColumn(headerName = "휴대전화번호", index = 4)),
-    })
+@ExcelColumnOverrides({
+        @ExcelColumnOverride(headerName = "생성일", index = 8, column = @ExcelColumn(headerName = "생성일자")),
+        @ExcelColumnOverride(headerName = "수정일", index = 10, column = @ExcelColumn(headerName = "수정일자"))
+})
+public class Person extends BaseAuditEntity{
+    @ExcelColumn(headerName = "이름")
+    private String name;
     @Merge(headerName = "전화번호")
+    @ExcelColumnOverrides(@ExcelColumnOverride(headerName = "집전화번호", index = 5, column = @ExcelColumn(headerName = "휴대전화번호", index = 4)))
     private Phone phone;
+    @ExcelEmbedded
+    private Address address;
 }
 ```
 
@@ -115,20 +120,25 @@ public class SampleDTO extends BaseEntity{
 
 메타데이터를 작성하고 나면, 아래와 같은 방법으로 데이터를 추출할 수 있습니다. 이때 Streaming 방식과, Collection 방식으로 결과를 추출할 수 있습니다.
 
-```java
+<br />
 
-//방법1. Collection 방식(Controller 파라미터로 주입받는 방법)
+방법1. Collection 방식(Controller 파라미터로 주입받는 방법)
+```java
 @RestController
 public class SampleController {
     @PostMapping(value = "/form", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ExcelResultSet<SampleDTO>> getExcelResult(@ExcelRequestBody ExcelResultSet<SampleDTO> resultSet) {
-        //TODO your code
+    public ResponseEntity<ExcelResultSet<Person>> getExcelResult(@ExcelRequestBody ExcelResultSet<Person> resultSet) {
+        //your code
         return ResponseEntity.ok(resultSet);
     }
 }
+```
 
+<br />
 
-//방법2. Collection 방식(ExcelTemplate Bean으로 추출)
+방법2. Collection 방식(ExcelTemplate Bean으로 추출)
+
+```java
 @RestController
 public class SampleController {
     private final ExcelTemplate excelTemplate;
@@ -138,15 +148,19 @@ public class SampleController {
     }
 
     @PostMapping(value = "/form", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ExcelResultSet<SampleDTO>> getExcelResult(@RequestParam("file") MultipartFile file) {
-        final ExcelResultSet<SampleDTO> resultSet = excelTemplate.createResultSet(SampleDTO.class, file);
-        //TODO your code
+    public ResponseEntity<ExcelResultSet<Person>> getExcelResult(@RequestParam("file") MultipartFile file) {
+        final ExcelResultSet<Person> resultSet = excelTemplate.createResultSet(Person.class, file);
+        //your code
         return ResponseEntity.ok(resultSet);
     }
 }
+```
 
+<br />
 
-//방법3. Streaming 방식(ExcelTemplate Bean으로 추출)
+방법3. Streaming 방식(ExcelTemplate Bean으로 추출)
+
+```java
 @RestController
 public class SampleController {
     private final ExcelTemplate excelTemplate;
@@ -157,7 +171,7 @@ public class SampleController {
 
     @PostMapping(value = "/form", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> getExcelResult(@RequestParam("file") MultipartFile file) {
-        excelTemplate.parse(SampleDTO.class, file, sampleDTO -> {
+        excelTemplate.parse(Person.class, file, Person -> {
             //On Success Callback
         }, error -> {
             //On Failure Callback
