@@ -184,6 +184,35 @@ public class SampleController {
 
 <br />
 
+Supported Injection Field Type
+---
+
+
+<br />
+
+Primitive(Wrapper) 타입이나, String 그리고 JSR310 관련 타입(LocalDate, LocalTime, LocalDateTime, ZonedDateTime, OffsetDateTime, OffsetTime)을 지원합니다.
+날짜 관련 타입의 경우에는 __@DateTimeFormat__ Annotation이 반드시 필요합니다.
+
+
+```java
+public class BaseAuditEntity {
+    @ExcelColumn(headerName = "생성자")
+    private String creator;
+
+    @ExcelColumn(headerName = "생성일자")
+    @DateTimeFormat(pattern = "yyyyMMdd")
+    private LocalDate createdAt;
+   
+    @ExcelColumn(headerName = "수정자")
+    private String updater;
+
+    @ExcelColumn(headerName = "수정일자")
+    @DateTimeFormat(pattern = "yyyyMMdd")
+    private LocalDate updatedAt;
+}
+
+<br />
+
 License
 ---
 Excel Parser is licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/cla9/excel-parser-spring-boot-starter/blob/master/LICENSE) for full license text.
