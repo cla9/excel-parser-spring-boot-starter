@@ -72,7 +72,7 @@ public class ExcelConfigurationDelegate {
                             metaModelContext.putMetaModel(clazz, entityParser.getEntityMetadata());
                         }
                     } catch (ClassNotFoundException e) {
-                        throw new IllegalStateException("Unable find a entity class.", e);
+                        throw new IllegalStateException("Unable to find a entity class.", e);
                     }
                 });
     }
