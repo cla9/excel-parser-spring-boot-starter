@@ -82,6 +82,7 @@ Excel 파일 일부 Column 데이터 파싱 방법(@ExcelColumn Annotation 추�
 public class Character{
     @ExcelColumn(headerName = "번호")
     private Integer no;
+    
     @ExcelColumn(headerName = "등급")
     private String level;
     private String description;
@@ -109,9 +110,11 @@ Excel Parser에서 제공하는 모든 Annotation을 적용하면, 다음과 같
 public class Person extends BaseAuditEntity{
     @ExcelColumn(headerName = "이름")
     private String name;
+    
     @Merge(headerName = "전화번호")
     @ExcelColumnOverrides(@ExcelColumnOverride(headerName = "집전화번호", index = 5, column = @ExcelColumn(headerName = "휴대전화번호", index = 4)))
     private Phone phone;
+    
     @ExcelEmbedded
     private Address address;
 }
