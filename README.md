@@ -38,7 +38,7 @@ Maven을 사용한다면, 다음과 같이 사용 가능합니다.
 <dependency>
   <groupId>com.github.cla9</groupId>
   <artifactId>excel-parser-spring-boot-starter</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
