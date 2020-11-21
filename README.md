@@ -187,14 +187,14 @@ public class SampleController {
 
 <br />
 
-Supported Injection Field Type
+Supported Injection Types
 ---
 
 
 <br />
 
 Primitive(Wrapper) 타입이나, String 그리고 JSR310 관련 타입(LocalDate, LocalTime, LocalDateTime, ZonedDateTime, OffsetDateTime, OffsetTime)을 지원합니다.
-날짜 관련 타입의 경우에는 __@DateTimeFormat__ Annotation이 반드시 필요합니다.
+날짜 관련 데이터 타입의 경우에는 __@DateTimeFormat__ Annotation이 반드시 필요합니다.
 
 
 ```java
