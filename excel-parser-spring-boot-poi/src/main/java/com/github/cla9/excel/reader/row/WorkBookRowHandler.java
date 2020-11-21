@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 
@@ -38,10 +39,12 @@ public class WorkBookRowHandler implements RowHandler<Row> {
                 value = cell.getRichStringCellValue().getString();
                 break;
             case NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell))
+                if (DateUtil.isCellDateFormatted(cell)) {
                     value = cell.getLocalDateTimeCellValue().toString();
-                else
-                    value = String.valueOf(cell.getNumericCellValue());
+                }
+                else {
+                    value = BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+                }
                 if (value.endsWith(".0"))
                     value = value.substring(0, value.length() - 2);
                 break;
