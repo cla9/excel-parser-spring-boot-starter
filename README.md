@@ -117,6 +117,14 @@ public class Person extends BaseAuditEntity{
     
     @ExcelEmbedded
     private Address address;
+    
+    @ExcelColumn(headerName = "생성일자")
+    @DateTimeFormat(pattern = "yyyyMMdd")
+    private LocalDate createdAt;
+    
+    @ExcelColumn(headerName = "성별")
+    @ExcelConvert(converter = GenderConverter.class)
+    private Gender gender;
 }
 ```
 
