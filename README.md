@@ -25,7 +25,7 @@ Gradle을 Build 도구로 사용한다면, 아래와 같이 라이브러리를 �
 
 ```groovy
 dependencies {
-    implementation 'com.github.cla9:excel-parser-spring-boot-starter:1.0.0'
+    implementation 'com.github.cla9:excel-parser-spring-boot-starter:1.2.0'
 }    
 ```
 
@@ -38,7 +38,7 @@ Maven을 사용한다면, 다음과 같이 사용 가능합니다.
 <dependency>
   <groupId>com.github.cla9</groupId>
   <artifactId>excel-parser-spring-boot-starter</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
