@@ -29,4 +29,21 @@ public interface EntitySource {
      * @return the boolean
      */
     boolean isInjectionFields(final Field field);
+
+
+    /**
+     * Is supported injection class boolean.
+     *
+     * @param clazz the clazz
+     * @return the boolean
+     */
+    boolean isSupportedInjectionClass(Class<?> clazz);
+
+    /**
+     * Is supported date type boolean.
+     *
+     * @param clazz the clazz
+     * @return the boolean
+     */
+    boolean isSupportedDateType(Class<?> clazz);
 }

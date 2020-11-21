@@ -4,7 +4,7 @@ import com.github.cla9.excel.reader.annotation.*;
 import com.github.cla9.excel.reader.entity.ExcelMetaModel;
 import com.github.cla9.excel.reader.exception.*;
 import com.github.cla9.excel.reader.row.Range;
-import org.springframework.util.ClassUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -89,7 +89,7 @@ public class ExcelEntityParser implements EntityParser {
         Arrays.sort(tempOrder);
         for (int i = 1; i < tempOrder.length; i++) {
             if (tempOrder[i - 1] == tempOrder[i] && tempOrder[i] != UNDECIDED) {
-                throw new InvalidHeaderException("Excel column index must be unique");
+                throw new InvalidHeaderException(String.format("Excel column index must be unique Entity : %s" , this.tClass.getName()));
             }
         }
     }
@@ -106,7 +106,7 @@ public class ExcelEntityParser implements EntityParser {
             if (Objects.isNull(prevIndex)) {
                 indexMap.put(headerName, i);
             } else if (order.get(i) == UNDECIDED || order.get(prevIndex) == UNDECIDED) {
-                throw new InvalidHeaderException("The header name must be different or the index must be specified. headerName : " + headerName);
+                throw new InvalidHeaderException(String.format("The header name must be different or the index must be specified. Entity : %s headerName : %s" ,this.tClass.getName(),headerName));
             }
         }
     }
@@ -123,11 +123,15 @@ public class ExcelEntityParser implements EntityParser {
     private void findAllFields(final Class<?> tClass) {
         ReflectionUtils.doWithFields(tClass, field -> {
             final Class<?> clazz = field.getType();
-            if(visited.contains(clazz)){
-                throw new UnsatisfiedDependencyException( "Unsatisfied dependency expressed between class '" +
-                        tClass.getName()+"' and '" + clazz.getName() + "'" );
+
+            if(instantiatorSource.isSupportedDateType(clazz) && !field.isAnnotationPresent(DateTimeFormat.class)){
+                throw new InvalidHeaderException(String.format("Date Type must be placed @DateTimeFormat Annotation. Entity : %s Field : %s ", this.tClass.getName(), clazz.getName()));
             }
-            if (ClassUtils.isPrimitiveOrWrapper(clazz) || String.class.isAssignableFrom(clazz)) {
+            if(!instantiatorSource.isSupportedInjectionClass(clazz) && visited.contains(clazz)){
+                throw new UnsatisfiedDependencyException(String.format("Unsatisfied dependency expressed between class '%s' and '%s'", tClass.getName(), clazz.getName()));
+            }
+
+            if (instantiatorSource.isSupportedInjectionClass(clazz)) {
                 declaredFields.add(field);
             } else {
                 visited.add(clazz);
@@ -144,20 +148,25 @@ public class ExcelEntityParser implements EntityParser {
         if(bodyMetadata.headerRowPos() != UNDECIDED && bodyMetadata.headerRowRange().length != 0)
             throw new DuplicationHeaderRowPosException();
 
+        final String entityName = this.tClass.getName();
+
         if(bodyMetadata.headerRowRange().length > 1)
-            throw new InvalidHeaderException("Only one header range is available.");
+            throw new InvalidHeaderException(String.format("Only one header range is available. Entity : %s", entityName));
+
+        if(bodyMetadata.headerRowRange().length == 1 && bodyMetadata.headerRowRange()[0].start() > bodyMetadata.headerRowRange()[0].end())
+            throw new InvalidHeaderException(String.format("Start of header position must be less than end. Entity : %s", entityName));
 
         if(bodyMetadata.dataRowPos() != UNDECIDED && bodyMetadata.dataRowRange().length != 0)
             throw new DuplicationDataRowPosException();
 
         if(bodyMetadata.dataRowRange().length > 1)
-            throw new InvalidHeaderException("Only one data range is available.");
+            throw new InvalidHeaderException(String.format("Only one data range is available. Entity : %s", entityName));
 
         if(bodyMetadata.dataRowPos() == UNDECIDED && bodyMetadata.dataRowRange().length < 1)
-            throw new InvalidHeaderException("Either dataRowPos or dataRowRange must be entered.");
+            throw new InvalidHeaderException(String.format("Either dataRowPos or dataRowRange must be entered. Entity : %s", entityName));
 
         if(bodyMetadata.dataRowRange().length == 1 && bodyMetadata.dataRowRange()[0].start() > bodyMetadata.dataRowRange()[0].end())
-            throw new InvalidHeaderException("Start of data range must be less than end range");
+            throw new InvalidHeaderException(String.format("Start of data position must be less than end. Entity : %s", entityName));
     }
 
     private void calcHeaderRange(final int height) {
@@ -183,7 +192,7 @@ public class ExcelEntityParser implements EntityParser {
 
     private void validateHeaderRange() {
         if(headerRow.getStart() < 0)
-            throw new InvalidHeaderException("Header start position must be greater than 1. start : " + (headerRow.getStart() + 1) + " end : " + (headerRow.getEnd() + 1));
+            throw new InvalidHeaderException(String.format("Header start position must be greater than 1. Entity : %s start : %d end : %s", tClass.getName(), headerRow.getStart() + 1 ,headerRow.getEnd() + 1));
     }
 
     private void calcDataRowRange() {
@@ -205,7 +214,7 @@ public class ExcelEntityParser implements EntityParser {
             throw new DataRowPosNotFoundException();
         }
         if (dataRow.getEnd() != UNDECIDED && dataRow.getStart() > dataRow.getEnd()) {
-            throw new InvalidHeaderException("Row start position cannot be greater than end position start : " + (dataRow.getStart()+1) + " end : " + (dataRow.getEnd()+1));
+            throw new InvalidHeaderException(String.format("Row start position cannot be greater than end position. Entity : %s start : %d  end : %d", tClass.getName(), dataRow.getStart()+1 ,dataRow.getEnd()+1));
         }
         if (bodyMetadata.dataRowPos() != UNDECIDED && tClass.isAnnotationPresent(RowRange.class)) {
             throw new DuplicationDataRowPosException();
@@ -221,7 +230,7 @@ public class ExcelEntityParser implements EntityParser {
                 (headerStart <= dataEnd && dataEnd <= headerEnd) ||
                 (dataStart <= headerStart && headerStart <= dataEnd) ||
                 (dataStart <= headerEnd && headerEnd <= dataEnd)) {
-            throw new InvalidHeaderException("Header and data range cannot be overlapped.");
+            throw new InvalidHeaderException(String.format("Header and data range cannot be overlapped. Entity : %s", tClass.getName()));
         }
     }
 
@@ -238,7 +247,7 @@ public class ExcelEntityParser implements EntityParser {
 
                 if (!Objects.isNull(overrides)) {
                     overrideColumn = Arrays.stream(overrides.value())
-                            .filter(o -> o.column().headerName().equals(headerName) && o.column().index() == o.column().index())
+                            .filter(o -> o.column().headerName().equals(headerName) && o.column().index() == excelColumn.index())
                             .findAny();
                 }
 
