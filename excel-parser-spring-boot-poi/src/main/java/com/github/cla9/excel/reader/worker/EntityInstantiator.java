@@ -1,12 +1,16 @@
 package com.github.cla9.excel.reader.worker;
 
+import com.github.cla9.excel.reader.annotation.ExcelConvert;
 import com.github.cla9.excel.reader.entity.ErrorInfo;
 import com.github.cla9.excel.reader.entity.ErrorType;
 import com.github.cla9.excel.reader.entity.ExcelMetaModel;
+import com.github.cla9.excel.reader.exception.InvalidHeaderException;
+import com.github.cla9.excel.reader.exception.NoExcelConverterFoundException;
 import com.github.cla9.excel.reader.row.RowHandler;
 import com.github.cla9.excel.reader.util.ExcelBeanUtil;
 import com.github.drapostolos.typeparser.TypeParser;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ReflectionUtils;
@@ -99,8 +103,20 @@ public class EntityInstantiator<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void inject(EntitySource entitySource, Field field, Class<?> type, String value, Object instance) throws ParseException, IllegalAccessException {
-        if(entitySource.isSupportedDateType(type)){
+        if(field.isAnnotationPresent(ExcelConvert.class)){
+            final Class<?> converterType = field.getAnnotation(ExcelConvert.class).converter();
+
+            final ExcelColumnConverter<Object, Object> converter;
+            try {
+                converter = (ExcelColumnConverter<Object,Object>) ExcelBeanUtil.getBean(converterType);
+            } catch (NoSuchBeanDefinitionException e) {
+                throw new NoExcelConverterFoundException(String.format(" No qualifying Converter bean of type '%s' available.", converterType.getName()));
+            }
+            field.set(instance,converter.convertToEntityAttribute(value));
+        }
+        else if(entitySource.isSupportedDateType(type)){
             final DateTimeFormat dateTimeFormat = field.getAnnotation(DateTimeFormat.class);
             final Object parsedData = entitySource.getTimeFactory().getParser(dateTimeFormat, type).parse(value, LocaleContextHolder.getLocale());
             field.set(instance, parsedData);
@@ -127,7 +143,7 @@ public class EntityInstantiator<T> {
         field.setAccessible(true);
         final EntityInstantiatorSource instantiatorSource = excelMetaModel.getInstantiatorSource();
 
-        if (!instantiatorSource.isSupportedInjectionClass(type)) {
+        if (!instantiatorSource.isSupportedInjectionClass(type) && !type.isAnnotationPresent(ExcelConvert.class)) {
             final Object newInstance = BeanUtils.instantiateClass(type);
             try {
                 field.set(instance, newInstance);
@@ -168,7 +184,7 @@ public class EntityInstantiator<T> {
                     instantiatePartialInjectionObject(newInstance, headers, metadata, f);
                 }
             });
-        } else if (instanceSource.isInjectionFields(field)) {
+        } else if (instanceSource.isInjectionFields(field) || field.isAnnotationPresent(ExcelConvert.class)) {
             instances.add(new EntityOrder(instance, field));
         }
     }

@@ -5,6 +5,7 @@ import com.github.cla9.excel.reader.entity.ExcelMetaModel;
 import com.github.cla9.excel.reader.exception.*;
 import com.github.cla9.excel.reader.row.Range;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -124,10 +125,16 @@ public class ExcelEntityParser implements EntityParser {
         ReflectionUtils.doWithFields(tClass, field -> {
             final Class<?> clazz = field.getType();
 
-            if(instantiatorSource.isSupportedDateType(clazz) && !field.isAnnotationPresent(DateTimeFormat.class)){
+            if(field.isAnnotationPresent(ExcelConvert.class)){
+                final Class<?> converterType = field.getAnnotation(ExcelConvert.class).converter();
+                if(!converterType.getSuperclass().isAssignableFrom(ExcelColumnConverter.class)){
+                    throw new InvalidHeaderException(String.format("Only ExcelColumnConverter is allowded. Entity : %s Converter: %s",this.tClass.getName(), converterType.getName()));
+                }
+            }
+            else if(instantiatorSource.isSupportedDateType(clazz) && !field.isAnnotationPresent(DateTimeFormat.class)){
                 throw new InvalidHeaderException(String.format("Date Type must be placed @DateTimeFormat Annotation. Entity : %s Field : %s ", this.tClass.getName(), clazz.getName()));
             }
-            if(!instantiatorSource.isSupportedInjectionClass(clazz) && visited.contains(clazz)){
+            else if(!instantiatorSource.isSupportedInjectionClass(clazz) && visited.contains(clazz)){
                 throw new UnsatisfiedDependencyException(String.format("Unsatisfied dependency expressed between class '%s' and '%s'", tClass.getName(), clazz.getName()));
             }
 
@@ -294,6 +301,7 @@ public class ExcelEntityParser implements EntityParser {
 
     public ExcelMetaModel getEntityMetadata() {
         return ExcelMetaModel.builder()
+                .entityType(this.tClass)
                 .headers(List.copyOf(headerNames))
                 .hasOrder(order.stream().anyMatch(i -> i != UNDECIDED))
                 .headerRange(getHeaderRow())
