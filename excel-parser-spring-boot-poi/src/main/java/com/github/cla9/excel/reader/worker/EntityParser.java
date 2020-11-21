@@ -9,7 +9,7 @@ public interface EntityParser {
     /**
      * Parse.
      *
-     * @param clazz the clazz
+     * @param clazz the class type of entity
      */
     void parse(Class<?> clazz);
 

@@ -53,15 +53,17 @@ public abstract class AbstractSheetHandler implements SheetHandler {
                     .map(i -> {
                         final String headerName = metadataHeaders.get(i);
                         final List<Integer> indices = headerMap.get(headerName);
-                        if (Objects.isNull(indices))
-                            throw new InvalidHeaderException("There is no matched headerName. (" + headerName +")");
+                        final String entityName = excelMetaModel.getEntityType().getName();
+                        if (Objects.isNull(indices)) {
+                            throw new InvalidHeaderException(String.format("There is no matched headerName. Entity : %s HeaderName : %s", entityName, headerName));
+                        }
                         if (indices.size() == 1) {
                             return indices.get(0);
                         } else {
                             final int columnOrder = excelMetaModel.getOrder()[i];
                             if (indices.size() > 1 && columnOrder != UNDECIDED) {
                                 if(indices.indexOf(columnOrder) == -1)
-                                    throw new InvalidHeaderException("There is no matched header Index. headerName : " + headerName + " index : " + columnOrder);
+                                    throw new InvalidHeaderException(String.format("There is no matched header Index. Entity : %s headerName : %s index : %d",entityName, headerName, columnOrder));
                                 return columnOrder;
                             }
                         }
@@ -77,13 +79,14 @@ public abstract class AbstractSheetHandler implements SheetHandler {
      */
     protected void validateOrder(){
         final int[] metaDataOrder = excelMetaModel.getOrder();
+        final String entityName = excelMetaModel.getEntityType().getName();
         if(metaDataOrder.length != order.length) {
-            throw new InvalidHeaderException("Actual file headerName and ExcelColumn information doesn't matched");
+            throw new InvalidHeaderException(String.format("Actual file headerName and ExcelColumn information doesn't matched. Entity : %s ",entityName));
         }
         IntStream.range(0, metaDataOrder.length)
                 .filter(i -> (order[i] != metaDataOrder[i] && metaDataOrder[i] != UNDECIDED) || order[i] >= headerNames.size())
                 .forEach(i -> {
-                    throw new InvalidHeaderException("Index doesn't matched with actual excel file column order. index : " + (metaDataOrder[i]+1));
+                    throw new InvalidHeaderException(String.format("Index doesn't matched with actual excel file column order. Entity : %s Index : %d" , entityName, metaDataOrder[i]+1));
                 });
     }
 
@@ -92,7 +95,7 @@ public abstract class AbstractSheetHandler implements SheetHandler {
      */
     protected void validateHeader(){
         if (!excelMetaModel.hasAllColumnOrder() && excelMetaModel.getHeaders().size() != headerNames.size())
-            throw new InvalidHeaderException("There is mismatched header name");
+            throw new InvalidHeaderException(String.format("There is mismatched header name. Entity : %s", excelMetaModel.getEntityType().getName()));
     }
 
     /**
