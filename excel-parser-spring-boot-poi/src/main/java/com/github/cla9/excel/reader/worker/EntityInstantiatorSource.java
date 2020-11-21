@@ -1,8 +1,6 @@
 package com.github.cla9.excel.reader.worker;
 
-import com.github.cla9.excel.reader.annotation.ExcelColumn;
-import com.github.cla9.excel.reader.annotation.ExcelEmbedded;
-import com.github.cla9.excel.reader.annotation.Merge;
+import com.github.cla9.excel.reader.annotation.*;
 import org.springframework.format.datetime.standard.Jsr310DateTimeFormatAnnotationFormatterFactory;
 import org.springframework.util.ClassUtils;
 
@@ -39,7 +37,7 @@ public class EntityInstantiatorSource implements EntitySource {
 
     @Override
     public boolean isSupportedInjectionClass(Class<?> clazz) {
-        return timeFactory.getFieldTypes().contains(clazz) || ClassUtils.isPrimitiveOrWrapper(clazz) || String.class.isAssignableFrom(clazz);
+        return timeFactory.getFieldTypes().contains(clazz) || ClassUtils.isPrimitiveOrWrapper(clazz) || String.class.isAssignableFrom(clazz) || clazz.isEnum();
     }
 
     @Override
