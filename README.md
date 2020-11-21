@@ -210,8 +210,10 @@ public class BaseAuditEntity {
     @DateTimeFormat(pattern = "yyyyMMdd")
     private LocalDate updatedAt;
 }
+```
 
 <br />
+
 
 License
 ---
