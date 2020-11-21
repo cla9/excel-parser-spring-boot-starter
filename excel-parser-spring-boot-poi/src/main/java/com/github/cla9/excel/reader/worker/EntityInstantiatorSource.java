@@ -47,7 +47,7 @@ public class EntityInstantiatorSource implements EntitySource {
         return timeFactory.getFieldTypes().contains(clazz);
     }
 
-
+    @Override
     public Jsr310DateTimeFormatAnnotationFormatterFactory getTimeFactory() {
         return timeFactory;
     }

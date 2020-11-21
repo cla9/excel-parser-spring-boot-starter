@@ -77,7 +77,7 @@ public class EntityInstantiator<T> {
     }
 
 
-    private <U> void setupInstance(final List<? extends String> headers, EntityInstantiatorSource entitySource, final RowHandler<U> rowHandler) {
+    private <U> void setupInstance(final List<? extends String> headers, EntitySource entitySource, final RowHandler<U> rowHandler) {
         for (int i = 0; i < instances.size(); i++) {
             if (Objects.isNull(instances.get(i))) continue;
 
@@ -99,7 +99,7 @@ public class EntityInstantiator<T> {
         }
     }
 
-    private void inject(EntityInstantiatorSource entitySource, Field field, Class<?> type, String value, Object instance) throws ParseException, IllegalAccessException {
+    private void inject(EntitySource entitySource, Field field, Class<?> type, String value, Object instance) throws ParseException, IllegalAccessException {
         if(entitySource.isSupportedDateType(type)){
             final DateTimeFormat dateTimeFormat = field.getAnnotation(DateTimeFormat.class);
             final Object parsedData = entitySource.getTimeFactory().getParser(dateTimeFormat, type).parse(value, LocaleContextHolder.getLocale());

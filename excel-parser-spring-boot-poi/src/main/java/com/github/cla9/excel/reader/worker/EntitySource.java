@@ -1,11 +1,23 @@
 package com.github.cla9.excel.reader.worker;
 
+import org.springframework.context.support.EmbeddedValueResolutionSupport;
+import org.springframework.format.AnnotationFormatterFactory;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.lang.reflect.Field;
 
 /**
  * The interface Entity source.
  */
 public interface EntitySource {
+
+    /**
+     * Gets time factory.
+     *
+     * @return the time factory
+     */
+    AnnotationFormatterFactory<DateTimeFormat> getTimeFactory();
+
     /**
      * Is creation target field boolean.
      *
