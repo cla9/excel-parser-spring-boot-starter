@@ -103,8 +103,7 @@ Excel Parser에서 제공하는 모든 Annotation을 적용하면, 다음과 같
            messageSource = PersonMessageConverter.class)
 @ExcelBody(dataRowPos = 2)
 @ExcelMetaCachePut
-@ExcelColumnOverrides({
-        @ExcelColumnOverride(headerName = "생성일", index = 8, column = @ExcelColumn(headerName = "생성일자")),
+@ExcelColumnOverrides({      
         @ExcelColumnOverride(headerName = "수정일", index = 10, column = @ExcelColumn(headerName = "수정일자"))
 })
 public class Person extends BaseAuditEntity{
