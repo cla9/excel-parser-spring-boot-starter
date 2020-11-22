@@ -83,7 +83,7 @@ public class ExcelConfigurationDelegate {
             factory.setAccessible(true);
             factory.set(null, beanFactory);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new InternalError("Unable find ExcelBeanUtil");
+            throw new InternalError("Unable to find ExcelBeanUtil");
         }
     }
 }

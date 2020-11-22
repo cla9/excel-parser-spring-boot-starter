@@ -35,13 +35,14 @@ public final class SAXSheetExcelColumnHandler extends SAXSheetHandler {
             validateHeader();
         }
         else if(rowNum >= dataRange.getStart() && isPass()){
+            createEmptyCell(calcGap());
+            sortRow();
+            rowGenerationSuccessCallback.accept(row);
+
             final int end = dataRange.getEnd();
             if(end != UNDECIDED && end == rowNum){
                 throw new SAXStopParseException();
             }
-            createEmptyCell(calcGap());
-            sortRow();
-            rowGenerationSuccessCallback.accept(row);
         }
         row.clear();
     }
