@@ -206,8 +206,8 @@ public class ExcelEntityParser implements EntityParser {
         int dataRowPos = bodyMetadata.dataRowPos() - 1;
         if (dataRowPos > UNDECIDED) {
             dataRow = Range.builder().start(dataRowPos).end(UNDECIDED).build();
-        } else if (tClass.isAnnotationPresent(RowRange.class)) {
-            final RowRange rowRange = tClass.getAnnotation(RowRange.class);
+        } else if (bodyMetadata.dataRowRange().length > 0) {
+            final RowRange rowRange = bodyMetadata.dataRowRange()[0];
             dataRow = Range.builder()
                     .start(rowRange.start() - 1)
                     .end(rowRange.end() - 1)

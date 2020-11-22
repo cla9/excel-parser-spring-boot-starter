@@ -87,12 +87,13 @@ public class SAXSheetHandler extends AbstractSheetHandler implements SheetHandle
             createOrder();
         }
         else if(rowNum >= dataRange.getStart() && isPass()){
+            createEmptyCell(headerNames.size() - row.size());
+            rowGenerationSuccessCallback.accept(row);
+
             final int end = dataRange.getEnd();
             if(end != UNDECIDED && end == rowNum){
                 throw new SAXStopParseException();
             }
-            createEmptyCell(headerNames.size() - row.size());
-            rowGenerationSuccessCallback.accept(row);
         }
 
         row.clear();
