@@ -16,7 +16,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@ConditionalOnBean(ExcelMetaModelMappingContext.class)
 @ConditionalOnProperty(prefix = "excel.entity.validation", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Import(ExcelEntityScanRegistrar.class)
 public @interface EnableExcelEntityScan {
