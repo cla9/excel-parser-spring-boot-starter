@@ -16,6 +16,19 @@ Apache POI 라이브러리를 사용하여 API를 추상화하였으며, Excel P
 
 그 밖에 다양한 기능 및 사용법은 [Wiki](https://github.com/cla9/excel-parser-spring-boot-starter/wiki) 페이지를 참고 바랍니다.
 
+<br />
+
+Compatibility
+---
+Spring Boot 2.2 이상
+
+<br />
+
+Release
+---
+
+안정화 버전 : 1.2.1
+
 Hot to use
 ---
 
@@ -25,7 +38,7 @@ Gradle을 Build 도구로 사용한다면, 아래와 같이 라이브러리를 �
 
 ```groovy
 dependencies {
-    implementation 'com.github.cla9:excel-parser-spring-boot-starter:1.2.0'
+    implementation 'com.github.cla9:excel-parser-spring-boot-starter:1.2.1'
 }    
 ```
 
@@ -38,7 +51,7 @@ Maven을 사용한다면, 다음과 같이 사용 가능합니다.
 <dependency>
   <groupId>com.github.cla9</groupId>
   <artifactId>excel-parser-spring-boot-starter</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
 </dependency>
 ```
 
