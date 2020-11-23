@@ -187,7 +187,7 @@ public class SampleController {
         }, error -> {
             //On Failure Callback
         });
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
 ```
