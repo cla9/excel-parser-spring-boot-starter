@@ -6,7 +6,7 @@ Apache POI 라이브러리를 사용하여 API를 추상화하였으며, Excel P
 
 <br />
 
-- DOM 방식 XSSFWorkBook과 SAX 방식 XMLReader를 모두 지원합니다.
+- DOM 방식 XSSFWorkBook과 SAX 방식 XMLReader 모두 지원합니다.
 - Spring Boot 기동시, Entity 메타정보 Validation 및 Circular Dependency 검사 기능을 제공합니다.
 - 순차, 비순차, 부분범위 데이터 추출이 가능하며, JPA 스타일의 다양한 Annotation 지원으로 인해 클래스 재사용이 용이합니다.
 - MessageConverter 기능을 통해서 Header명에 대한 다국어 처리가 가능합니다.
@@ -22,12 +22,10 @@ Compatibility
 ---
 Spring Boot 2.2 이상
 
-<br />
-
 Release
 ---
 
-안정화 버전 : 1.2.1
+ 버전 : 1.2.1
 
 Hot to use
 ---
