@@ -50,11 +50,30 @@ public class SAXReader<T> extends ExcelReader<T> {
     /**
      * Instantiates a new Sax reader.
      *
+     * @param tClass the t class
+     */
+    public SAXReader(Class<T> tClass, String sheetName) {
+        super(tClass, sheetName);
+    }
+
+    /**
+     * Instantiates a new Sax reader.
+     *
      * @param tClass         the t class
      * @param excelMetaModel the excel meta model
      */
     public SAXReader(Class<T> tClass, ExcelMetaModel excelMetaModel) {
         super(tClass, excelMetaModel);
+    }
+
+    /**
+     * Instantiates a new Sax reader.
+     *
+     * @param tClass         the t class
+     * @param excelMetaModel the excel meta model
+     */
+    public SAXReader(Class<T> tClass, String sheetName, ExcelMetaModel excelMetaModel) {
+        super(tClass, sheetName, excelMetaModel);
     }
 
     @Override
@@ -132,8 +151,19 @@ public class SAXReader<T> extends ExcelReader<T> {
     }
 
     private void requestParse(final XSSFReader r, final XMLReader parser) throws IOException, SAXException, InvalidFormatException {
-        try (InputStream sheet = r.getSheetsData().next()) {
-            parser.parse(new InputSource(sheet));
+
+        // if not given worksheet name.
+        if (sheetName.isEmpty()) {
+            try (InputStream sheet = r.getSheetsData().next()) {
+                parser.parse(new InputSource(sheet));
+            }
+        }
+
+        // if given worksheet name.
+        if (sheetName.isPresent()) {
+            try (InputStream sheet = r.getSheet(sheetName.get())) {
+                parser.parse(new InputSource(sheet));
+            }
         }
     }
 
@@ -145,6 +175,7 @@ public class SAXReader<T> extends ExcelReader<T> {
         else{
             sheetHandler = new SAXSheetExcelColumnHandler(excelMetaModel, mergedAreas);
         }
+
         return sheetHandler;
     }
 
