@@ -43,8 +43,8 @@ public final class WorkBookSheetHandler extends AbstractSheetHandler   {
      */
     public WorkBookSheetHandler(final Workbook workbook, final ExcelMetaModel excelMetaModel) {
         super(excelMetaModel);
-        this.sheet = this.sheetName.isPresent()
-            ? workbook.getSheet(this.sheetName.get()) : workbook.getSheetAt(0);
+        this.sheet = this.sheetName.isEmpty()
+                ? workbook.getSheetAt(0) : workbook.getSheet(this.sheetName.get());
 
         validateSheet();
 
@@ -65,8 +65,8 @@ public final class WorkBookSheetHandler extends AbstractSheetHandler   {
      */
     public WorkBookSheetHandler(final String sheetName, final Workbook workbook, final ExcelMetaModel excelMetaModel) {
         super(sheetName, excelMetaModel);
-        this.sheet = this.sheetName.isPresent()
-            ? workbook.getSheet(this.sheetName.get()) : workbook.getSheetAt(0);
+        this.sheet = this.sheetName.isEmpty()
+                ? workbook.getSheetAt(0) : workbook.getSheet(this.sheetName.get());
 
         validateSheet();
 
