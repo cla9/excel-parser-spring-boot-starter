@@ -39,11 +39,32 @@ public class WorkBookReader<T> extends ExcelReader<T> {
     /**
      * Instantiates a new Work book reader.
      *
+     * @param tClass    the t class
+     * @param sheetName target sheet name
+     */
+    public WorkBookReader(Class<T> tClass, String sheetName) {
+        super(tClass, sheetName);
+    }
+
+    /**
+     * Instantiates a new Work book reader.
+     *
      * @param tClass         the t class
      * @param excelMetaModel the excel meta model
      */
     public WorkBookReader(Class<T> tClass, ExcelMetaModel excelMetaModel) {
         super(tClass, excelMetaModel);
+    }
+
+    /**
+     * Instantiates a new Work book reader.
+     *
+     * @param tClass         the t class
+     * @param sheetName      target sheet name
+     * @param excelMetaModel the excel meta model
+     */
+    public WorkBookReader(Class<T> tClass, String sheetName, ExcelMetaModel excelMetaModel) {
+        super(tClass, sheetName, excelMetaModel);
     }
 
     @Override
@@ -63,7 +84,7 @@ public class WorkBookReader<T> extends ExcelReader<T> {
                     }
                 };
 
-        doStart(multipartFile, excelMetaModel,workBookRowHandler);
+        doStart(multipartFile, excelMetaModel, workBookRowHandler);
 
         excelResultSet.pushAllValidatedList(rows);
         return excelResultSet;
@@ -93,7 +114,9 @@ public class WorkBookReader<T> extends ExcelReader<T> {
                          final BiFunction<RowHandler<Row>, WorkBookSheetHandler, Consumer<Row>> rowConsumer) {
 
         Workbook workbook = getWorkbook(multipartFile);
-        WorkBookSheetHandler sheetHandler = new WorkBookSheetHandler(workbook, excelMetaModel);
+        WorkBookSheetHandler sheetHandler = sheetName.isEmpty()
+            ? new WorkBookSheetHandler(workbook, excelMetaModel)
+            : new WorkBookSheetHandler(sheetName.get(), workbook, excelMetaModel);
         RowHandler<Row> rowHandler = getRowHandler(sheetHandler, excelMetaModel);
 
         sheetHandler.setRowGenerationSuccessCallback(rowConsumer.apply(rowHandler, sheetHandler));
