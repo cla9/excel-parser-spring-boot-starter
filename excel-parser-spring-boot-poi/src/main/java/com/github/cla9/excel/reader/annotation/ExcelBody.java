@@ -14,6 +14,7 @@ import static com.github.cla9.excel.reader.util.ExcelConstant.UNDECIDED;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExcelBody {
+    String sheetName();
     int dataRowPos() default UNDECIDED;
     int headerRowPos() default UNDECIDED;
     RowRange[] headerRowRange() default {};
