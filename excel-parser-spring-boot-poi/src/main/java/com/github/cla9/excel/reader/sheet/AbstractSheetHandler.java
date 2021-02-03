@@ -26,6 +26,8 @@ public abstract class AbstractSheetHandler implements SheetHandler {
      */
     protected int[] order;
 
+    protected Optional<String> sheetName;
+
     /**
      * Instantiates a new Abstract sheet handler.
      *
@@ -34,6 +36,19 @@ public abstract class AbstractSheetHandler implements SheetHandler {
     protected AbstractSheetHandler(ExcelMetaModel metadata) {
         this.excelMetaModel = metadata;
         this.headerNames = new ArrayList<>();
+        this.sheetName = Optional.empty();
+    }
+
+    /**
+     * Instantiates a new Abstract sheet handler.
+     *
+     * @param sheetName the worksheet name
+     * @param metadata  the metadata
+     */
+    protected AbstractSheetHandler(String sheetName, ExcelMetaModel metadata) {
+        this.excelMetaModel = metadata;
+        this.headerNames = new ArrayList<>();
+        this.sheetName = Optional.of(sheetName);
     }
 
 
