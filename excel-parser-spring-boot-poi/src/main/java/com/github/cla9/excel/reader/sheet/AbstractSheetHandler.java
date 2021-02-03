@@ -46,8 +46,7 @@ public abstract class AbstractSheetHandler implements SheetHandler {
      * @param metadata  the metadata
      */
     protected AbstractSheetHandler(String sheetName, ExcelMetaModel metadata) {
-        this.excelMetaModel = metadata;
-        this.headerNames = new ArrayList<>();
+        this(metadata);
         this.sheetName = Optional.of(sheetName);
     }
 

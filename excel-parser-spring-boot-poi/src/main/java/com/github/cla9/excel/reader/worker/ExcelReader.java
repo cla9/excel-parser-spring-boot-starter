@@ -68,7 +68,8 @@ public abstract class ExcelReader<T> implements Reader<T> {
     /**
      * Instantiates a new Excel reader.
      *
-     * @param tClass the t class
+     * @param tClass target class type
+     * @param sheetName excel sheet name
      */
     protected ExcelReader(Class<T> tClass, String sheetName) {
         this.tClass = tClass;

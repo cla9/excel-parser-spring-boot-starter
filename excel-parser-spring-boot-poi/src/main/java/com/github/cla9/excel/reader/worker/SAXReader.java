@@ -5,6 +5,7 @@ import com.github.cla9.excel.reader.entity.ExcelMetaModel;
 import com.github.cla9.excel.reader.entity.ExceptionRow;
 import com.github.cla9.excel.reader.exception.ExcelReaderFileException;
 import com.github.cla9.excel.reader.entity.ExcelRowException;
+import com.github.cla9.excel.reader.exception.InvalidSheetNameException;
 import com.github.cla9.excel.reader.exception.SAXStopParseException;
 import com.github.cla9.excel.reader.row.SAXRowHandler;
 import com.github.cla9.excel.reader.sheet.MergedArea;
@@ -27,6 +28,7 @@ import org.xml.sax.XMLReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -50,7 +52,8 @@ public class SAXReader<T> extends ExcelReader<T> {
     /**
      * Instantiates a new Sax reader.
      *
-     * @param tClass the t class
+     * @param tClass target class type
+     * @param sheetName excel sheet name
      */
     public SAXReader(Class<T> tClass, String sheetName) {
         super(tClass, sheetName);
@@ -69,7 +72,8 @@ public class SAXReader<T> extends ExcelReader<T> {
     /**
      * Instantiates a new Sax reader.
      *
-     * @param tClass         the t class
+     * @param tClass         target class type
+     * @param sheetName      excel sheet name
      * @param excelMetaModel the excel meta model
      */
     public SAXReader(Class<T> tClass, String sheetName, ExcelMetaModel excelMetaModel) {
@@ -157,12 +161,25 @@ public class SAXReader<T> extends ExcelReader<T> {
             try (InputStream sheet = r.getSheetsData().next()) {
                 parser.parse(new InputSource(sheet));
             }
+            return;
         }
 
         // if given worksheet name.
-        if (sheetName.isPresent()) {
-            try (InputStream sheet = r.getSheet(sheetName.get())) {
-                parser.parse(new InputSource(sheet));
+        final Iterator<InputStream> sheets = r.getSheetsData();
+        if(sheets instanceof XSSFReader.SheetIterator){
+            XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) sheets;
+            boolean isMatchedSheet = false;
+            final String sheetName = this.sheetName.get();
+            while(iter.hasNext() && !isMatchedSheet){
+                final InputStream stream = iter.next();
+                if(iter.getSheetName().equals(sheetName)){
+                    parser.parse(new InputSource(stream));
+                    isMatchedSheet = true;
+                }
+                stream.close();
+            }
+            if(!isMatchedSheet){
+                throw new InvalidSheetNameException(sheetName);
             }
         }
     }

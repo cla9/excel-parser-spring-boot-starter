@@ -67,13 +67,13 @@ public class ReaderFactory {
    * Create instance reader.
    *
    * @param <T>    the type parameter
-   * @param tClass the t class
+   * @param tClass target class type
    * @return the reader
    */
   public <T> Reader<T> createInstance(Class<T> tClass) {
     final ExcelBody entity = tClass.getAnnotation(ExcelBody.class);
 
-    if (entity.sheetName() != null) {
+    if (!"".equals(entity.sheetName())) {
       return createInstance(entity.type(), entity.sheetName(), tClass);
     }
 
