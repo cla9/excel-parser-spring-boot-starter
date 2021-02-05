@@ -4,6 +4,7 @@ import com.github.cla9.excel.reader.entity.ExcelMetaModel;
 import com.github.cla9.excel.reader.entity.ExcelRowException;
 import com.github.cla9.excel.reader.entity.ExceptionRow;
 import com.github.cla9.excel.reader.row.RowHandler;
+import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -29,6 +30,12 @@ public abstract class ExcelReader<T> implements Reader<T> {
     private ExcelMetaModel excelMetaModel;
 
     /**
+     * Target sheet name of excel file.
+     */
+
+    protected final Optional<String> sheetName;
+
+    /**
      * Instantiates a new Excel reader.
      *
      * @param tClass          the t class
@@ -41,6 +48,7 @@ public abstract class ExcelReader<T> implements Reader<T> {
         this.entityGenerator = entityGenerator;
         this.entityParser.parse(tClass);
         this.excelMetaModel = entityParser.getEntityMetadata();
+        this.sheetName = Optional.empty();
     }
 
     /**
@@ -54,6 +62,22 @@ public abstract class ExcelReader<T> implements Reader<T> {
         entityGenerator = new EntityInstantiator<>();
         entityParser.parse(tClass);
         excelMetaModel = entityParser.getEntityMetadata();
+        this.sheetName = Optional.empty();
+    }
+
+    /**
+     * Instantiates a new Excel reader.
+     *
+     * @param tClass target class type
+     * @param sheetName excel sheet name
+     */
+    protected ExcelReader(Class<T> tClass, String sheetName) {
+        this.tClass = tClass;
+        entityParser = new ExcelEntityParser();
+        entityGenerator = new EntityInstantiator<>();
+        entityParser.parse(tClass);
+        excelMetaModel = entityParser.getEntityMetadata();
+        this.sheetName = Optional.of(sheetName);
     }
 
     /**
@@ -67,6 +91,22 @@ public abstract class ExcelReader<T> implements Reader<T> {
         this.entityParser = null;
         this.entityGenerator = new EntityInstantiator<>();
         this.excelMetaModel = excelMetaModel;
+        this.sheetName = Optional.empty();
+    }
+
+    /**
+     * Instantiates a new Excel reader.
+     *
+     * @param tClass         the t class
+     * @param sheetName      the worksheet name
+     * @param excelMetaModel the excel meta model
+     */
+    public ExcelReader(Class<T> tClass, String sheetName, ExcelMetaModel excelMetaModel) {
+        this.tClass = tClass;
+        this.entityParser = null;
+        this.entityGenerator = new EntityInstantiator<>();
+        this.excelMetaModel = excelMetaModel;
+        this.sheetName = Optional.of(sheetName);
     }
 
     @Override

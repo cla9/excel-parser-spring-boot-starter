@@ -5,6 +5,7 @@ import com.github.cla9.excel.reader.entity.ExcelMetaModel;
 import com.github.cla9.excel.reader.entity.ExceptionRow;
 import com.github.cla9.excel.reader.exception.ExcelReaderFileException;
 import com.github.cla9.excel.reader.entity.ExcelRowException;
+import com.github.cla9.excel.reader.exception.InvalidSheetNameException;
 import com.github.cla9.excel.reader.exception.SAXStopParseException;
 import com.github.cla9.excel.reader.row.SAXRowHandler;
 import com.github.cla9.excel.reader.sheet.MergedArea;
@@ -27,6 +28,7 @@ import org.xml.sax.XMLReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -50,11 +52,32 @@ public class SAXReader<T> extends ExcelReader<T> {
     /**
      * Instantiates a new Sax reader.
      *
+     * @param tClass target class type
+     * @param sheetName excel sheet name
+     */
+    public SAXReader(Class<T> tClass, String sheetName) {
+        super(tClass, sheetName);
+    }
+
+    /**
+     * Instantiates a new Sax reader.
+     *
      * @param tClass         the t class
      * @param excelMetaModel the excel meta model
      */
     public SAXReader(Class<T> tClass, ExcelMetaModel excelMetaModel) {
         super(tClass, excelMetaModel);
+    }
+
+    /**
+     * Instantiates a new Sax reader.
+     *
+     * @param tClass         target class type
+     * @param sheetName      excel sheet name
+     * @param excelMetaModel the excel meta model
+     */
+    public SAXReader(Class<T> tClass, String sheetName, ExcelMetaModel excelMetaModel) {
+        super(tClass, sheetName, excelMetaModel);
     }
 
     @Override
@@ -132,8 +155,32 @@ public class SAXReader<T> extends ExcelReader<T> {
     }
 
     private void requestParse(final XSSFReader r, final XMLReader parser) throws IOException, SAXException, InvalidFormatException {
-        try (InputStream sheet = r.getSheetsData().next()) {
-            parser.parse(new InputSource(sheet));
+
+        // if not given worksheet name.
+        if (sheetName.isEmpty()) {
+            try (InputStream sheet = r.getSheetsData().next()) {
+                parser.parse(new InputSource(sheet));
+            }
+            return;
+        }
+
+        // if given worksheet name.
+        final Iterator<InputStream> sheets = r.getSheetsData();
+        if(sheets instanceof XSSFReader.SheetIterator){
+            XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) sheets;
+            boolean isMatchedSheet = false;
+            final String sheetName = this.sheetName.get();
+            while(iter.hasNext() && !isMatchedSheet){
+                final InputStream stream = iter.next();
+                if(iter.getSheetName().equals(sheetName)){
+                    parser.parse(new InputSource(stream));
+                    isMatchedSheet = true;
+                }
+                stream.close();
+            }
+            if(!isMatchedSheet){
+                throw new InvalidSheetNameException(sheetName);
+            }
         }
     }
 
@@ -145,6 +192,7 @@ public class SAXReader<T> extends ExcelReader<T> {
         else{
             sheetHandler = new SAXSheetExcelColumnHandler(excelMetaModel, mergedAreas);
         }
+
         return sheetHandler;
     }
 

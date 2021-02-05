@@ -1,6 +1,7 @@
 package com.github.cla9.excel.reader.sheet;
 
 import com.github.cla9.excel.reader.entity.ExcelMetaModel;
+import com.github.cla9.excel.reader.exception.InvalidSheetNameException;
 import com.github.cla9.excel.reader.row.Range;
 import com.github.cla9.excel.reader.row.WorkBookRowHandler;
 import org.apache.commons.lang3.StringUtils;
@@ -42,12 +43,48 @@ public final class WorkBookSheetHandler extends AbstractSheetHandler   {
      */
     public WorkBookSheetHandler(final Workbook workbook, final ExcelMetaModel excelMetaModel) {
         super(excelMetaModel);
-        this.sheet = workbook.getSheetAt(0);
+        this.sheet = this.sheetName.isEmpty()
+                ? workbook.getSheetAt(0) : workbook.getSheet(this.sheetName.get());
+
+        validateSheet();
+
         this.dataRange = excelMetaModel.getDataRange();
         this.headerRange = excelMetaModel.getHeaderRange();
         rowHandler = new WorkBookRowHandler();
         mergedAreas = new ArrayList<>();
         metadata = excelMetaModel;
+        init(excelMetaModel);
+    }
+
+    /**
+     * Instantiates a new Work book sheet handler.
+     *
+     * @param sheetName      the worksheet name
+     * @param workbook       the workbook
+     * @param excelMetaModel the excel meta model
+     */
+    public WorkBookSheetHandler(final String sheetName, final Workbook workbook, final ExcelMetaModel excelMetaModel) {
+        super(sheetName, excelMetaModel);
+        this.sheet = this.sheetName.isEmpty()
+                ? workbook.getSheetAt(0) : workbook.getSheet(this.sheetName.get());
+
+        validateSheet();
+
+        this.dataRange = excelMetaModel.getDataRange();
+        this.headerRange = excelMetaModel.getHeaderRange();
+        rowHandler = new WorkBookRowHandler();
+        mergedAreas = new ArrayList<>();
+        metadata = excelMetaModel;
+        init(excelMetaModel);
+    }
+
+    private void validateSheet() {
+        if (Objects.isNull(this.sheet)) {
+            throw new InvalidSheetNameException(this.sheetName.get());
+        }
+    }
+
+    private void init(ExcelMetaModel excelMetaModel) {
         createHeader();
         createOrder();
         if (excelMetaModel.isPartialParseOperation()) {

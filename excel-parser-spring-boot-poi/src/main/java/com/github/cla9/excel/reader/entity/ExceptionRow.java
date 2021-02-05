@@ -17,6 +17,7 @@ public class ExceptionRow<T> {
      * @param <T> the type parameter
      * @return the exception row . exception row builder
      */
+    @SuppressWarnings({"unchecked","rawtypes"})
     public static <T> ExceptionRow.ExceptionRowBuilder<T> builder() {
         return new ExceptionRow.ExceptionRowBuilder();
     }
@@ -91,6 +92,7 @@ public class ExceptionRow<T> {
          *
          * @return the exception row
          */
+        @SuppressWarnings({"unchecked","rawtypes"})
         public ExceptionRow<T> build() {
             return new ExceptionRow(this.row, this.errors);
         }
