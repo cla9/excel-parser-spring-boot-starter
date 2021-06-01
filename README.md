@@ -108,11 +108,11 @@ Excel Parser에서 제공하는 모든 Annotation을 적용하면, 다음과 같
 
 
 ```java
-@ExcelBody(dataRowPos = 3, 
+@ExcelBody(sheetName = "test",
+           dataRowPos = 3, 
            type = ReaderType.SAX,
            headerRowRange = @RowRange(start = 1, end = 2),
            messageSource = PersonMessageConverter.class)
-@ExcelBody(dataRowPos = 2)
 @ExcelMetaCachePut
 @ExcelColumnOverrides({      
         @ExcelColumnOverride(headerName = "수정일", index = 10, column = @ExcelColumn(headerName = "수정일자"))
