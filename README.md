@@ -25,7 +25,7 @@ Spring Boot 2.2 이상
 Release
 ---
 
-최신 버전 : 1.2.1
+최신 버전 : 1.3.0
 
 Hot to use
 ---
